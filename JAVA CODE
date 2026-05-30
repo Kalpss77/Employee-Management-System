@@ -1,0 +1,2473 @@
+
+import javax.swing.*;
+import javax.swing.table.*;
+import java.awt.*;
+import java.awt.event.*;
+
+public class EMS extends JFrame implements ActionListener {
+
+    // LOGIN COMPONENTS
+
+    JPanel loginPanel, dashboardPanel, loginBox;
+
+    JComboBox<String> roleBox, themeBox, dashTheme;
+
+    JTextField idField;
+
+    JPasswordField passField;
+
+    JCheckBox showPassword;
+
+    JButton loginBtn, exitBtn;
+
+    // DASHBOARD BUTTONS
+
+    JButton addBtn, updateBtn, deleteBtn,
+            searchBtn, viewBtn,
+            clearBtn, reportBtn,
+            logoutBtn;
+
+    JTable table;
+
+    DefaultTableModel model;
+
+    String currentRole = "";
+
+    Color mainColor = new Color(255,105,180);
+
+    EMS() {
+
+        setTitle("Employee Management System");
+        ImageIcon logo =
+        new ImageIcon("icon.png");
+        setIconImage(logo.getImage());
+        JFrame addFrame =new JFrame("Add Employee");
+        JFrame updateFrame =new JFrame("Update Employee");
+        JFrame deleteFrame =new JFrame("Delete Employee");
+        JFrame searchFrame =new JFrame("Search Employee");
+        JFrame viewFrame =new JFrame("View Employee");
+        JFrame clearFrame =new JFrame("Clear Employee");
+        JFrame reportFrame =new JFrame("Monthly Report");
+
+        
+        setSize(1600,900);
+        setLocationRelativeTo(null);
+        setLayout(null);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+
+        // ================= LOGIN PANEL =================
+
+        loginPanel = new JPanel();
+
+        loginPanel.setLayout(null);
+
+        loginPanel.setBounds(0,0,1600,900);
+
+        loginPanel.setBackground(new Color(10,10,30));
+
+        add(loginPanel);
+
+        JLabel title =
+                new JLabel(
+                        "EMPLOYEE MANAGEMENT SYSTEM");
+
+        title.setBounds(420,40,800,50);
+
+        title.setForeground(Color.WHITE);
+
+        title.setFont(
+                new Font("Arial",
+                        Font.BOLD,
+                        35));
+
+        loginPanel.add(title);
+
+        // THEME
+
+        String themes[] = {
+                "Pink",
+                "Blue",
+                "Purple",
+                "Green",
+                "Orange"
+        };
+
+        themeBox = new JComboBox<>(themes);
+
+        themeBox.setBounds(1300,40,150,35);
+
+        themeBox.addActionListener(this);
+
+        loginPanel.add(themeBox);
+
+        // LOGIN BOX
+
+        loginBox = new JPanel();
+
+        loginBox.setLayout(null);
+
+        loginBox.setBounds(500,180,500,430);
+
+        loginBox.setBackground(mainColor);
+
+        loginBox.setBorder(
+                BorderFactory.createLineBorder(
+                        Color.WHITE,
+                        3));
+
+        loginPanel.add(loginBox);
+
+        JLabel roleLabel =
+                new JLabel("Role");
+
+        roleLabel.setBounds(70,60,120,30);
+
+        roleLabel.setFont(
+                new Font("Arial",
+                        Font.BOLD,
+                        20));
+
+        loginBox.add(roleLabel);
+
+        String roles[] = {
+                "Admin",
+                "HR",
+                "Manager",
+                "TL",
+                "Employee"
+        };
+
+        roleBox = new JComboBox<>(roles);
+
+        roleBox.setBounds(220,60,180,35);
+
+        loginBox.add(roleBox);
+
+        JLabel idLabel =
+                new JLabel("User ID");
+
+        idLabel.setBounds(70,130,120,30);
+
+        idLabel.setFont(
+                new Font("Arial",
+                        Font.BOLD,
+                        20));
+
+        loginBox.add(idLabel);
+
+        idField = new JTextField();
+
+        idField.setBounds(220,130,180,35);
+
+        loginBox.add(idField);
+
+        JLabel passLabel =
+                new JLabel("Password");
+
+        passLabel.setBounds(70,200,120,30);
+
+        passLabel.setFont(
+                new Font("Arial",
+                        Font.BOLD,
+                        20));
+
+        loginBox.add(passLabel);
+
+        passField = new JPasswordField();
+
+        passField.setBounds(220,200,180,35);
+
+        loginBox.add(passField);
+
+        // SHOW PASSWORD
+
+        showPassword =
+                new JCheckBox("Show Password");
+
+        showPassword.setBounds(220,250,180,30);
+
+        showPassword.setBackground(mainColor);
+
+        showPassword.addActionListener(this);
+
+        loginBox.add(showPassword);
+
+        // BUTTONS
+
+        loginBtn = new JButton("LOGIN");
+
+        loginBtn.setBounds(90,330,120,40);
+
+        loginBtn.setBackground(Color.BLACK);
+
+        loginBtn.setForeground(Color.WHITE);
+
+        loginBtn.addActionListener(this);
+
+        loginBox.add(loginBtn);
+
+        exitBtn = new JButton("EXIT");
+
+        exitBtn.setBounds(260,330,120,40);
+
+        exitBtn.setBackground(Color.BLACK);
+
+        exitBtn.setForeground(Color.WHITE);
+
+        exitBtn.addActionListener(this);
+
+        loginBox.add(exitBtn);
+
+        // ================= DASHBOARD =================
+
+        dashboardPanel = new JPanel();
+
+        dashboardPanel.setLayout(null);
+
+        dashboardPanel.setBounds(0,0,1600,900);
+
+        dashboardPanel.setBackground(
+                new Color(10,10,30));
+
+        dashboardPanel.setVisible(false);
+
+        add(dashboardPanel);
+
+        JLabel heading =
+                new JLabel("DASHBOARD");
+
+        heading.setBounds(580,30,500,50);
+
+        heading.setForeground(Color.WHITE);
+
+        heading.setFont(
+                new Font("Arial",
+                        Font.BOLD,
+                        38));
+
+        dashboardPanel.add(heading);
+
+        // DASH THEME
+
+        dashTheme = new JComboBox<>(themes);
+
+        dashTheme.setBounds(1300,30,150,35);
+
+        dashTheme.addActionListener(this);
+
+        dashboardPanel.add(dashTheme);
+
+        // BUTTONS
+
+        addBtn = createButton(
+                "Add Employee",
+                1200,
+                120);
+
+        updateBtn = createButton(
+                "Update Employee",
+                1200,
+                200);
+
+        deleteBtn = createButton(
+                "Delete Employee",
+                1200,
+                280);
+
+        searchBtn = createButton(
+                "Search Employee",
+                1200,
+                360);
+
+        viewBtn = createButton(
+                "View Employee",
+                1200,
+                440);
+
+        clearBtn = createButton(
+                "Clear",
+                1200,
+                520);
+
+        reportBtn = createButton(
+                "Monthly Report",
+                1200,
+                600);
+
+        logoutBtn = createButton(
+                "Logout",
+                1200,
+                680);
+
+        // TABLE
+
+        String cols[] = {
+                "ID",
+                "Name",
+                "Department",
+                "Role",
+                "Attendance %",
+                "Salary"
+        };
+
+        model = new DefaultTableModel(cols,0) {
+    @Override
+    public boolean isCellEditable(int row, int column) {
+        return false;
+    }
+};
+
+        table = new JTable(model);
+
+        table.setRowHeight(35);
+
+        table.setFont(
+                new Font("Segoe UI",
+                        Font.PLAIN,
+                        16));
+
+        table.setBackground(
+                new Color(255,250,250));
+
+        table.setGridColor(
+                new Color(255,192,203));
+
+        table.setSelectionBackground(
+                new Color(255,182,193));
+
+        JTableHeader head =
+                table.getTableHeader();
+
+        head.setBackground(mainColor);
+
+        head.setForeground(Color.WHITE);
+
+        head.setFont(
+                new Font("Arial",
+                        Font.BOLD,
+                        17));
+
+        JScrollPane pane =
+                new JScrollPane(table);
+
+        pane.setBounds(80,120,1050,650);
+
+        dashboardPanel.add(pane);
+
+        setVisible(true);
+    }
+
+    // CREATE BUTTON
+
+    JButton createButton(
+            String text,
+            int x,
+            int y) {
+
+        JButton btn =
+                new JButton(text);
+
+        btn.setBounds(x,y,220,50);
+
+        btn.setBackground(mainColor);
+
+        btn.setForeground(Color.WHITE);
+
+        btn.setFocusPainted(false);
+
+        btn.setFont(
+                new Font("Arial",
+                        Font.BOLD,
+                        18));
+
+        btn.addActionListener(this);
+
+        dashboardPanel.add(btn);
+
+        return btn;
+    }
+
+
+    // THEME CHANGE
+
+    void changeTheme(String theme) {
+
+        if(theme.equals("Pink")) {
+
+            mainColor =
+                    new Color(255,105,180);
+
+        }
+
+        else if(theme.equals("Blue")) {
+
+            mainColor =
+                    new Color(70,130,180);
+
+        }
+
+        else if(theme.equals("Purple")) {
+
+            mainColor =
+                    new Color(138,43,226);
+
+        }
+
+        else if(theme.equals("Green")) {
+
+            mainColor =
+                    new Color(60,179,113);
+
+        }
+
+        else if(theme.equals("Orange")) {
+
+            mainColor =
+                    new Color(255,140,0);
+
+        }
+        UIManager.put("OptionPane.background", mainColor);
+
+        UIManager.put("Panel.background", mainColor);
+
+        UIManager.put("OptionPane.messageForeground", Color.WHITE);
+
+        UIManager.put("OptionPane.messageFont",new Font("Segoe UI",
+                Font.BOLD,
+                18));
+        UIManager.put("Button.font",new Font("Arial",
+                Font.BOLD,
+                16));
+               // BUTTON COLORS
+
+UIManager.put(
+        "Button.background",
+        mainColor);
+
+UIManager.put(
+        "Button.foreground",
+        Color.WHITE);
+
+// TEXT FIELD COLORS
+
+UIManager.put(
+        "TextField.background",
+        Color.WHITE);
+
+UIManager.put(
+        "TextField.foreground",
+        Color.BLACK);
+
+// OPTIONPANE BORDER
+
+UIManager.put(
+        "OptionPane.border",
+        BorderFactory.createLineBorder(
+                Color.WHITE,
+                3)); 
+                
+
+        loginBox.setBackground(mainColor);
+
+        showPassword.setBackground(mainColor);
+
+        addBtn.setBackground(mainColor);
+
+        updateBtn.setBackground(mainColor);
+
+        deleteBtn.setBackground(mainColor);
+
+        searchBtn.setBackground(mainColor);
+
+        viewBtn.setBackground(mainColor);
+
+        clearBtn.setBackground(mainColor);
+
+        reportBtn.setBackground(mainColor);
+
+        logoutBtn.setBackground(mainColor);
+
+        table.getTableHeader()
+                .setBackground(mainColor);
+                SwingUtilities.updateComponentTreeUI(this);
+
+        repaint();
+    }
+
+    // ACTION
+
+    public void actionPerformed(ActionEvent e) {
+
+        // THEME
+
+        if(e.getSource()==themeBox) {
+
+            changeTheme(
+                    themeBox.getSelectedItem()
+                            .toString());
+
+        }
+
+        if(e.getSource()==dashTheme) {
+
+            changeTheme(
+                    dashTheme.getSelectedItem()
+                            .toString());
+
+        }
+
+        // SHOW PASSWORD
+
+        if(e.getSource()==showPassword) {
+
+            if(showPassword.isSelected()) {
+
+                passField.setEchoChar((char)0);
+
+            }
+
+            else {
+
+                passField.setEchoChar('*');
+
+            }
+        }
+
+        // LOGIN
+
+        if(e.getSource()==loginBtn) {
+
+            String role =
+                    roleBox.getSelectedItem()
+                            .toString();
+
+            String id =
+                    idField.getText();
+
+            String pass =
+                    String.valueOf(
+                            passField.getPassword());
+
+            
+            if(role.equals("Admin")
+                    &&
+                    id.equals("admin")
+                    &&
+                    pass.equals("admin123")) {
+
+                currentRole = "Admin";
+                UIManager.put("OptionPane.background", mainColor);
+UIManager.put("Panel.background", mainColor);
+                Object[] options = {"CONTINUE"};
+
+JOptionPane.showOptionDialog(
+        this,
+        "Login Successful!\nWelcome " + role,
+        "LOGIN SUCCESS",
+        JOptionPane.DEFAULT_OPTION,
+        JOptionPane.INFORMATION_MESSAGE,
+        null,
+        options,
+        options[0]
+);
+
+                openDashboard();
+
+            }
+
+            // HR
+
+            else if(role.equals("HR")
+                    &&
+                    id.equals("hr")
+                    &&
+                    pass.equals("hr123")) {
+
+                currentRole = "HR";
+                UIManager.put("OptionPane.background", mainColor);
+UIManager.put("Panel.background", mainColor);
+                Object[] options = {"CONTINUE"};
+
+JOptionPane.showOptionDialog(
+        this,
+        "Login Successful!\nWelcome " + role,
+        "LOGIN SUCCESS",
+        JOptionPane.DEFAULT_OPTION,
+        JOptionPane.INFORMATION_MESSAGE,
+        null,
+        options,
+        options[0]
+);
+                openDashboard();
+
+            }
+
+            // MANAGER
+
+            else if(role.equals("Manager")
+                    &&
+                    id.equals("manager")
+                    &&
+                    pass.equals("manager123")) {
+
+                currentRole = "Manager";
+                UIManager.put("OptionPane.background", mainColor);
+UIManager.put("Panel.background", mainColor);
+                 Object[] options = {"CONTINUE"};
+
+JOptionPane.showOptionDialog(
+        this,
+        "Login Successful!\nWelcome " + role,
+        "LOGIN SUCCESS",
+        JOptionPane.DEFAULT_OPTION,
+        JOptionPane.INFORMATION_MESSAGE,
+        null,
+        options,
+        options[0]
+);
+
+                openDashboard();
+
+            }
+
+            // TL
+
+            else if(role.equals("TL")
+                    &&
+                    id.equals("tl")
+                    &&
+                    pass.equals("tl123")) {
+
+                currentRole = "TL";
+                UIManager.put("OptionPane.background", mainColor);
+UIManager.put("Panel.background", mainColor);
+                 Object[] options = {"CONTINUE"};
+
+JOptionPane.showOptionDialog(
+        this,
+        "Login Successful!\nWelcome " + role,
+        "LOGIN SUCCESS",
+        JOptionPane.DEFAULT_OPTION,
+        JOptionPane.INFORMATION_MESSAGE,
+        null,
+        options,
+        options[0]
+);
+                openDashboard();
+
+            }
+
+            // EMPLOYEE
+
+            else if(role.equals("Employee")
+                    &&
+                    id.equals("emp")
+                    &&
+                    pass.equals("emp123")) {
+
+                currentRole = "Employee";
+                UIManager.put("OptionPane.background", mainColor);
+UIManager.put("Panel.background", mainColor);
+                 Object[] options = {"CONTINUE"};
+
+JOptionPane.showOptionDialog(
+        this,
+        "Login Successful!\nWelcome " + role,
+        "LOGIN SUCCESS",
+        JOptionPane.DEFAULT_OPTION,
+        JOptionPane.INFORMATION_MESSAGE,
+        null,
+        options,
+        options[0]
+);
+
+                openDashboard();
+
+            }
+
+           else {
+                UIManager.put("OptionPane.background", mainColor);
+UIManager.put("Panel.background", mainColor);
+                Object[] options = {"TRY AGAIN"};
+
+JOptionPane.showOptionDialog(
+        this,
+        "Invalid User ID or Password!",
+        "LOGIN FAILED",
+        JOptionPane.DEFAULT_OPTION,
+        JOptionPane.ERROR_MESSAGE,
+        null,
+        options,
+        options[0]
+);
+
+}
+        }
+
+        // EXIT
+
+        else if(e.getSource()==exitBtn) {
+
+            System.exit(0);
+
+        }
+
+        // ADD EMPLOYEE
+
+        else if(e.getSource()==addBtn) {
+
+            JFrame addFrame =
+                    new JFrame(
+                            "Add Employee");
+            ImageIcon logo =new ImageIcon("icon.png");
+            addFrame.setIconImage(logo.getImage());
+
+            addFrame.setSize(500,650);
+            Dimension screen =
+        Toolkit.getDefaultToolkit()
+                .getScreenSize();
+
+int x = (screen.width - 500) / 2;
+int y = (screen.height - 650) / 2;
+
+addFrame.setLocation(x, y);
+
+
+
+            addFrame.setLayout(null);
+
+            addFrame.getContentPane()
+                    .setBackground(mainColor);
+
+                    addFrame.setLocationRelativeTo(this);
+                    
+                    addFrame.setVisible(true);
+
+            JLabel l1 =
+                    new JLabel("Employee ID");
+
+            l1.setBounds(50,50,120,30);
+
+            addFrame.add(l1);
+
+            JTextField t1 =
+                    new JTextField();
+
+            t1.setBounds(220,50,180,30);
+
+            addFrame.add(t1);
+
+            JLabel l2 =
+                    new JLabel("Name");
+
+            l2.setBounds(50,110,120,30);
+
+            addFrame.add(l2);
+
+            JTextField t2 =
+                    new JTextField();
+
+            t2.setBounds(220,110,180,30);
+
+            addFrame.add(t2);
+
+            JLabel l3 =
+                    new JLabel("Department");
+
+            l3.setBounds(50,170,120,30);
+
+            addFrame.add(l3);
+
+            JTextField t3 =
+                    new JTextField();
+
+            t3.setBounds(220,170,180,30);
+
+            addFrame.add(t3);
+
+            JLabel l4 =
+                    new JLabel("Role");
+
+            l4.setBounds(50,230,120,30);
+
+            addFrame.add(l4);
+
+            JTextField t4 =
+                    new JTextField();
+
+            t4.setBounds(220,230,180,30);
+
+            addFrame.add(t4);
+
+            JLabel l5 =
+                    new JLabel("Attendance %");
+
+            l5.setBounds(50,290,120,30);
+
+            addFrame.add(l5);
+
+            JTextField t5 =
+                    new JTextField();
+
+            t5.setBounds(220,290,180,30);
+
+            addFrame.add(t5);
+
+            JLabel l6 =
+                    new JLabel("Salary");
+
+            l6.setBounds(50,350,120,30);
+
+            addFrame.add(l6);
+
+            JTextField t6 =
+                    new JTextField();
+
+            t6.setBounds(220,350,180,30);
+
+            addFrame.add(t6);
+
+            JButton save =
+                    new JButton("SAVE");
+
+            save.setBounds(150,470,150,45);
+
+            save.setBackground(Color.BLACK);
+
+            save.setForeground(Color.WHITE);
+
+            addFrame.add(save);
+
+            save.addActionListener(
+                    new ActionListener() {
+
+                public void actionPerformed(
+                        ActionEvent e) {
+                                // 1. Empty field check
+    if(t1.getText().trim().isEmpty() ||
+       t2.getText().trim().isEmpty() ||
+       t3.getText().trim().isEmpty() ||
+       t4.getText().trim().isEmpty() ||
+       t5.getText().trim().isEmpty() ||
+       t6.getText().trim().isEmpty())
+    {
+        JOptionPane.showMessageDialog(
+                addFrame,
+                "Please enter all fields!"
+        );
+        return;
+    }
+                                
+        // DUPLICATE ID CHECK
+        for(int i=0; i<model.getRowCount(); i++)
+        {
+            if(model.getValueAt(i,0)
+                    .toString()
+                    .equals(t1.getText()))
+            {
+                JOptionPane.showMessageDialog(
+                        addFrame,
+                        "Employee ID already exists!"
+                );
+                return;
+            }
+        }
+
+                                
+          
+
+
+                String data[] = {
+
+                            t1.getText(),
+                            t2.getText(),
+                            t3.getText(),
+                            t4.getText(),
+                            t5.getText(),
+                            t6.getText()
+                    };
+
+                    model.addRow(data);
+                    // AUTO SORT EMPLOYEE ID
+                    TableRowSorter<DefaultTableModel> sorter =new TableRowSorter<>(model);
+                    sorter.setComparator(0,
+    (a,b) -> Integer.compare(
+        Integer.parseInt(a.toString()),
+        Integer.parseInt(b.toString())));
+                    table.setRowSorter(sorter);
+                    sorter.toggleSortOrder(0);
+                    UIManager.put("OptionPane.background", mainColor);
+UIManager.put("Panel.background", mainColor);
+                    Object[] options = {"DONE"};
+
+JOptionPane.showOptionDialog(
+        addFrame,
+        "Employee Added Successfully!",
+        "SUCCESS",
+        JOptionPane.DEFAULT_OPTION,
+        JOptionPane.INFORMATION_MESSAGE,
+        null,
+        options,
+        options[0]
+);
+
+                    addFrame.dispose();
+
+                }
+            });
+
+        }
+
+        // SEARCH
+
+        else if(e.getSource()==searchBtn) {
+
+    JFrame searchFrame =
+            new JFrame("Search Employee");
+
+    ImageIcon logo =
+            new ImageIcon("icon.png");
+
+    searchFrame.setIconImage(
+            logo.getImage());
+
+    searchFrame.setSize(450,300);
+
+    searchFrame.setLayout(null);
+
+    searchFrame.getContentPane()
+            .setBackground(mainColor);
+
+    JLabel title =
+            new JLabel("SEARCH EMPLOYEE");
+
+    title.setBounds(90,20,300,40);
+
+    title.setForeground(Color.WHITE);
+
+    title.setFont(
+            new Font("Arial",
+                    Font.BOLD,
+                    28));
+
+    searchFrame.add(title);
+
+    JLabel label =
+            new JLabel("Enter Employee ID");
+
+    label.setBounds(50,100,180,30);
+
+    label.setForeground(Color.WHITE);
+
+    label.setFont(
+            new Font("Segoe UI",
+                    Font.BOLD,
+                    18));
+
+    searchFrame.add(label);
+
+    JTextField searchField =
+            new JTextField();
+
+    searchField.setBounds(220,100,150,35);
+
+    searchFrame.add(searchField);
+
+    JButton search =
+            new JButton("SEARCH");
+
+    search.setBounds(140,180,140,45);
+
+    search.setBackground(Color.BLACK);
+
+    search.setForeground(Color.WHITE);
+
+    search.setFont(
+            new Font("Arial",
+                    Font.BOLD,
+                    18));
+
+    searchFrame.add(search);
+
+    // SEARCH ACTION
+
+    search.addActionListener(
+            new ActionListener() {
+
+        public void actionPerformed(
+                ActionEvent e) {
+
+            String id =
+                    searchField.getText();
+
+            boolean found = false;
+
+            for(int i=0;
+                i<model.getRowCount();
+                i++) {
+
+                if(model.getValueAt(i,0)
+                        .toString()
+                        .equals(id)) {
+
+                    found = true;
+
+                    // NEW DETAILS FRAME
+
+                    JFrame detailsFrame =
+                            new JFrame(
+                                    "Employee Details");
+
+                    detailsFrame.setSize(550,500);
+
+                    detailsFrame.setLayout(null);
+
+                    detailsFrame.getContentPane()
+                            .setBackground(
+                                    new Color(15,15,35));
+
+                    detailsFrame.setIconImage(
+                            logo.getImage());
+
+                    JLabel head =
+                            new JLabel(
+                                    "EMPLOYEE DETAILS");
+
+                    head.setBounds(
+                            120,20,400,40);
+
+                    head.setForeground(
+                            Color.WHITE);
+
+                    head.setFont(
+                            new Font("Arial",
+                                    Font.BOLD,
+                                    30));
+
+                    detailsFrame.add(head);
+
+                    String details[] = {
+
+                            "Employee ID : "
+                                    + model.getValueAt(i,0),
+
+                            "Name : "
+                                    + model.getValueAt(i,1),
+
+                            "Department : "
+                                    + model.getValueAt(i,2),
+
+                            "Role : "
+                                    + model.getValueAt(i,3),
+
+                            "Attendance : "
+                                    + model.getValueAt(i,4),
+
+                            "Salary : "
+                                    + model.getValueAt(i,5)
+                    };
+
+                    int y = 100;
+
+                    for(String text : details) {
+
+                        JLabel data =
+                                new JLabel(text);
+
+                        data.setBounds(
+                                80,y,400,35);
+
+                        data.setForeground(
+                                Color.WHITE);
+
+                        data.setFont(
+                                new Font("Segoe UI",
+                                        Font.BOLD,
+                                        20));
+
+                        detailsFrame.add(data);
+
+                        y += 55;
+                    }
+
+                    // SUCCESS MESSAGE
+                    UIManager.put("OptionPane.background", mainColor);
+UIManager.put("Panel.background", mainColor);
+                    Object[] options = {"OK"};
+
+JOptionPane.showOptionDialog(
+        searchFrame,
+        "Employee Found Successfully!",
+        "SEARCH SUCCESS",
+        JOptionPane.DEFAULT_OPTION,
+        JOptionPane.INFORMATION_MESSAGE,
+        null,
+        options,
+        options[0]
+);
+                   
+
+                    detailsFrame.setLocationRelativeTo(null);
+                    
+
+                    detailsFrame.setVisible(true);
+
+                    searchFrame.dispose();
+
+                }
+            }
+
+            if(!found) {
+                UIManager.put("OptionPane.background", mainColor);
+UIManager.put("Panel.background", mainColor);
+               Object[] options = {"SEARCH AGAIN "};
+
+JOptionPane.showOptionDialog(
+        searchFrame,
+        "Employee ID Not Found!",
+        "SEARCH FAILED",
+        JOptionPane.DEFAULT_OPTION,
+        JOptionPane.ERROR_MESSAGE,
+        null,
+        options,
+        options[0]
+);
+
+            }
+        }
+    });
+
+    searchFrame.setLocationRelativeTo(null);
+   
+
+    searchFrame.setVisible(true);
+}
+
+        // VIEW EMPLOYEE
+
+else if(e.getSource()==viewBtn) {
+
+    JFrame viewFrame =
+            new JFrame("Employee Details");
+            
+
+    viewFrame.setSize(1100,600);
+
+    viewFrame.setLayout(null);
+
+    viewFrame.getContentPane()
+            .setBackground(new Color(15,15,35));
+
+    // LOGO
+
+    ImageIcon logo =
+            new ImageIcon("icon.png");
+
+    viewFrame.setIconImage(
+            logo.getImage());
+
+    // TITLE
+
+    JLabel title =
+            new JLabel("EMPLOYEE DETAILS");
+
+    title.setBounds(360,20,400,40);
+
+    title.setForeground(Color.WHITE);
+
+    title.setFont(
+            new Font("Arial",
+                    Font.BOLD,
+                    30));
+
+    viewFrame.add(title);
+
+    // TABLE
+    JTable viewTable = new JTable(model) {
+    @Override
+    public boolean isCellEditable(int row, int column) {
+        return false;
+    }
+};
+            TableRowSorter<DefaultTableModel> sorter =
+        new TableRowSorter<>(model);
+        sorter.setComparator(0,
+    (a,b) -> Integer.compare(
+        Integer.parseInt(a.toString()),
+        Integer.parseInt(b.toString())));
+
+viewTable.setRowSorter(sorter);
+
+sorter.toggleSortOrder(0);
+
+    viewTable.setRowHeight(35);
+
+    viewTable.setFont(
+            new Font("Segoe UI",
+                    Font.PLAIN,
+                    16));
+
+    viewTable.setBackground(
+            new Color(255,250,250));
+
+    viewTable.setGridColor(mainColor);
+
+    viewTable.setSelectionBackground(
+            new Color(255,182,193));
+
+    JTableHeader header =
+            viewTable.getTableHeader();
+
+    header.setBackground(mainColor);
+
+    header.setForeground(Color.WHITE);
+
+    header.setFont(
+            new Font("Arial",
+                    Font.BOLD,
+                    17));
+
+    JScrollPane pane =
+            new JScrollPane(viewTable);
+
+    pane.setBounds(40,100,1000,400);
+
+    viewFrame.add(pane);
+
+    // TOTAL EMPLOYEE LABEL
+
+    JLabel total =
+            new JLabel(
+                    "Total Employees : "
+                    +
+                    model.getRowCount());
+
+    total.setBounds(40,520,300,30);
+
+    total.setForeground(Color.WHITE);
+
+    total.setFont(
+            new Font("Arial",
+                    Font.BOLD,
+                    18));
+
+    viewFrame.add(total);
+
+    viewFrame.setLocationRelativeTo(null);
+   
+
+    viewFrame.setVisible(true);
+
+}
+        // DELETE EMPLOYEE
+
+else if(e.getSource()==deleteBtn) {
+
+    JFrame deleteFrame =
+            new JFrame("Delete Employee");
+            ImageIcon logo =new ImageIcon("icon.png");
+            deleteFrame.setIconImage(logo.getImage());
+
+    deleteFrame.setSize(450,300);
+
+    deleteFrame.setLayout(null);
+
+    deleteFrame.getContentPane()
+            .setBackground(mainColor);
+
+    JLabel title =
+            new JLabel("DELETE EMPLOYEE");
+
+    title.setBounds(90,20,300,40);
+
+    title.setForeground(Color.WHITE);
+
+    title.setFont(
+            new Font("Arial",
+                    Font.BOLD,
+                    28));
+
+    deleteFrame.add(title);
+
+    JLabel idLabel =
+            new JLabel("Employee ID");
+
+    idLabel.setBounds(50,100,140,30);
+
+    idLabel.setForeground(Color.WHITE);
+
+    idLabel.setFont(
+            new Font("Segoe UI",
+                    Font.BOLD,
+                    18));
+
+    deleteFrame.add(idLabel);
+
+    JTextField deleteField =
+            new JTextField();
+
+    deleteField.setBounds(200,100,170,35);
+
+    deleteField.setFont(
+            new Font("Segoe UI",
+                    Font.PLAIN,
+                    16));
+
+    deleteFrame.add(deleteField);
+
+    JButton delete =
+            new JButton("DELETE");
+
+    delete.setBounds(130,180,160,45);
+
+    delete.setBackground(Color.BLACK);
+
+    delete.setForeground(Color.WHITE);
+
+    delete.setFont(
+            new Font("Arial",
+                    Font.BOLD,
+                    18));
+
+    deleteFrame.add(delete);
+
+    delete.addActionListener(
+            new ActionListener() {
+
+        public void actionPerformed(
+                ActionEvent e) {
+                        
+
+            String deleteId =
+                    deleteField.getText();
+
+            boolean found = false;
+
+            for(int i=0;
+                i<model.getRowCount();
+                i++) {
+
+                if(model.getValueAt(i,0)
+                        .toString()
+                        .equals(deleteId)) {
+
+                    model.removeRow(i);
+
+                    found = true;
+                    UIManager.put("OptionPane.background", mainColor);
+UIManager.put("Panel.background", mainColor);
+                    Object[] options = {"DELETED"};
+
+JOptionPane.showOptionDialog(
+        deleteFrame,
+        "Employee Deleted Successfully!",
+        "DELETE SUCCESS",
+        JOptionPane.DEFAULT_OPTION,
+        JOptionPane.INFORMATION_MESSAGE,
+        null,
+        options,
+        options[0]
+);
+
+                    deleteFrame.dispose();
+
+                    break;
+                }
+            }
+
+            if(!found) {
+
+                UIManager.put("OptionPane.background", mainColor);
+UIManager.put("Panel.background", mainColor);
+                Object[] options = {"TRY AGAIN"};
+
+JOptionPane.showOptionDialog(
+        deleteFrame,
+        "Employee ID Not Found!",
+        "DELETE FAILED",
+        JOptionPane.DEFAULT_OPTION,
+        JOptionPane.ERROR_MESSAGE,
+        null,
+        options,
+        options[0]
+);
+
+            }
+        }
+    });
+
+    deleteFrame.setLocationRelativeTo(null);
+ 
+
+    deleteFrame.setVisible(true);
+
+}
+
+        
+        // UPDATE EMPLOYEE
+
+else if(e.getSource()==updateBtn) {
+
+    JFrame updateFrame =
+            new JFrame("Update Employee");
+
+    ImageIcon logo =
+            new ImageIcon("icon.png");
+
+    updateFrame.setIconImage(
+            logo.getImage());
+
+    updateFrame.setSize(550,750);
+
+    updateFrame.setLayout(null);
+
+    updateFrame.getContentPane()
+            .setBackground(mainColor);
+
+    JLabel title =
+            new JLabel("UPDATE EMPLOYEE");
+
+    title.setBounds(110,20,400,40);
+
+    title.setForeground(Color.WHITE);
+
+    title.setFont(
+            new Font("Arial",
+                    Font.BOLD,
+                    30));
+
+    updateFrame.add(title);
+
+    // SEARCH ID
+
+    JLabel searchLabel =
+            new JLabel("Enter Employee ID");
+
+    searchLabel.setBounds(50,90,180,30);
+
+    searchLabel.setForeground(Color.WHITE);
+
+    searchLabel.setFont(
+            new Font("Segoe UI",
+                    Font.BOLD,
+                    18));
+
+    updateFrame.add(searchLabel);
+
+    JTextField searchField =
+            new JTextField();
+
+    searchField.setBounds(250,90,180,35);
+
+    updateFrame.add(searchField);
+
+    JButton findBtn =
+            new JButton("FIND");
+
+    findBtn.setBounds(180,150,140,40);
+
+    findBtn.setBackground(Color.BLACK);
+
+    findBtn.setForeground(Color.WHITE);
+
+    findBtn.setFont(
+            new Font("Arial",
+                    Font.BOLD,
+                    18));
+
+    updateFrame.add(findBtn);
+
+    // DETAILS FIELDS
+
+    JLabel idLabel =
+            new JLabel("Employee ID");
+
+    idLabel.setBounds(50,240,180,30);
+
+    idLabel.setForeground(Color.WHITE);
+
+    updateFrame.add(idLabel);
+
+    JTextField idField =
+            new JTextField();
+
+    idField.setBounds(250,240,180,35);
+
+    idField.setEditable(false);
+
+    updateFrame.add(idField);
+
+    JLabel nameLabel =
+            new JLabel("Name");
+
+    nameLabel.setBounds(50,300,180,30);
+
+    nameLabel.setForeground(Color.WHITE);
+
+    updateFrame.add(nameLabel);
+
+    JTextField nameField =
+            new JTextField();
+
+    nameField.setBounds(250,300,180,35);
+
+    updateFrame.add(nameField);
+
+    JLabel deptLabel =
+            new JLabel("Department");
+
+    deptLabel.setBounds(50,360,180,30);
+
+    deptLabel.setForeground(Color.WHITE);
+
+    updateFrame.add(deptLabel);
+
+    JTextField deptField =
+            new JTextField();
+
+    deptField.setBounds(250,360,180,35);
+
+    updateFrame.add(deptField);
+
+    JLabel roleLabel =
+            new JLabel("Role");
+
+    roleLabel.setBounds(50,420,180,30);
+
+    roleLabel.setForeground(Color.WHITE);
+
+    updateFrame.add(roleLabel);
+
+    JTextField roleField =
+            new JTextField();
+
+    roleField.setBounds(250,420,180,35);
+
+    updateFrame.add(roleField);
+
+    JLabel attLabel =
+            new JLabel("Attendance %");
+
+    attLabel.setBounds(50,480,180,30);
+
+    attLabel.setForeground(Color.WHITE);
+
+    updateFrame.add(attLabel);
+
+    JTextField attField =
+            new JTextField();
+
+    attField.setBounds(250,480,180,35);
+
+    updateFrame.add(attField);
+
+    JLabel salaryLabel =
+            new JLabel("Salary");
+
+    salaryLabel.setBounds(50,540,180,30);
+
+    salaryLabel.setForeground(Color.WHITE);
+
+    updateFrame.add(salaryLabel);
+
+    JTextField salaryField =
+            new JTextField();
+
+    salaryField.setBounds(250,540,180,35);
+
+    updateFrame.add(salaryField);
+
+    JButton update =
+            new JButton("UPDATE");
+
+    update.setBounds(180,630,160,45);
+
+    update.setBackground(Color.BLACK);
+
+    update.setForeground(Color.WHITE);
+
+    update.setFont(
+            new Font("Arial",
+                    Font.BOLD,
+                    20));
+
+    updateFrame.add(update);
+
+    // FIND BUTTON ACTION
+
+    findBtn.addActionListener(
+            new ActionListener() {
+
+        public void actionPerformed(
+                ActionEvent e) {
+
+            String id =
+                    searchField.getText();
+
+            boolean found = false;
+
+            for(int i=0;
+                i<model.getRowCount();
+                i++) {
+
+                if(model.getValueAt(i,0)
+                        .toString()
+                        .equals(id)) {
+
+                    idField.setText(
+                            model.getValueAt(i,0)
+                                    .toString());
+
+                    nameField.setText(
+                            model.getValueAt(i,1)
+                                    .toString());
+
+                    deptField.setText(
+                            model.getValueAt(i,2)
+                                    .toString());
+
+                    roleField.setText(
+                            model.getValueAt(i,3)
+                                    .toString());
+
+                    attField.setText(
+                            model.getValueAt(i,4)
+                                    .toString());
+
+                    salaryField.setText(
+                            model.getValueAt(i,5)
+                                    .toString());
+
+                    found = true;
+
+                    UIManager.put("OptionPane.background", mainColor);
+UIManager.put("Panel.background", mainColor);
+                    Object[] options = {"OK"};
+
+JOptionPane.showOptionDialog(
+        updateFrame,
+        "Employee Found Successfully!",
+        "FOUND",
+        JOptionPane.DEFAULT_OPTION,
+        JOptionPane.INFORMATION_MESSAGE,
+        null,
+        options,
+        options[0]
+);
+                    
+                }
+            }
+
+            if(!found) {
+
+               UIManager.put("OptionPane.background", mainColor);
+UIManager.put("Panel.background", mainColor);
+               Object[] options = {"TRY AGAIN"};
+
+JOptionPane.showOptionDialog(
+        updateFrame,
+        "Employee ID Not Found!",
+        "UPDATE FAILED",
+        JOptionPane.DEFAULT_OPTION,
+        JOptionPane.ERROR_MESSAGE,
+        null,
+        options,
+        options[0]
+);
+
+            }
+        }
+    });
+
+    // UPDATE ACTION
+
+    update.addActionListener(
+            new ActionListener() {
+
+        public void actionPerformed(
+                ActionEvent e) {
+
+            String id =
+                    idField.getText();
+
+            for(int i=0;
+                i<model.getRowCount();
+                i++) {
+
+                if(model.getValueAt(i,0)
+                        .toString()
+                        .equals(id)) {
+
+                    model.setValueAt(
+                            nameField.getText(),
+                            i,1);
+
+                    model.setValueAt(
+                            deptField.getText(),
+                            i,2);
+
+                    model.setValueAt(
+                            roleField.getText(),
+                            i,3);
+
+                    model.setValueAt(
+                            attField.getText(),
+                            i,4);
+
+                    model.setValueAt(
+                            salaryField.getText(),
+                            i,5);
+
+                    UIManager.put("OptionPane.background", mainColor);
+UIManager.put("Panel.background", mainColor);
+                    Object[] options = {"UPDATED"};
+
+JOptionPane.showOptionDialog(
+        updateFrame,
+        "Employee Updated Successfully!",
+        "UPDATE SUCCESS",
+        JOptionPane.DEFAULT_OPTION,
+        JOptionPane.INFORMATION_MESSAGE,
+        null,
+        options,
+        options[0]
+);
+
+                    updateFrame.dispose();
+                }
+            }
+        }
+    });
+
+    updateFrame.setLocationRelativeTo(null);
+   
+
+    updateFrame.setVisible(true);
+}
+// CLEAR TABLE
+
+else if(e.getSource()==clearBtn) {
+
+    JFrame clearFrame =
+            new JFrame("Clear Data");
+            ImageIcon logo =new ImageIcon("icon.png");
+            clearFrame.setIconImage(logo.getImage());
+
+    clearFrame.setSize(450,300);
+
+    clearFrame.setLayout(null);
+
+    clearFrame.getContentPane()
+            .setBackground(mainColor);
+
+    JLabel title =
+            new JLabel("CLEAR EMPLOYEE DATA");
+
+    title.setBounds(40,30,400,40);
+
+    title.setForeground(Color.WHITE);
+
+    title.setFont(
+            new Font("Arial",
+                    Font.BOLD,
+                    26));
+
+    clearFrame.add(title);
+
+    JLabel msg =
+            new JLabel(
+                    "Do you want to clear all the employee?");
+
+    msg.setBounds(60,100,320,30);
+
+    msg.setForeground(Color.WHITE);
+
+    msg.setFont(
+            new Font("Segoe UI",
+                    Font.BOLD,
+                    18));
+
+    clearFrame.add(msg);
+
+    JButton yes =
+            new JButton("YES");
+
+    yes.setBounds(80,180,120,45);
+
+    yes.setBackground(Color.BLACK);
+
+    yes.setForeground(Color.WHITE);
+
+    yes.setFont(
+            new Font("Arial",
+                    Font.BOLD,
+                    18));
+
+    clearFrame.add(yes);
+
+    JButton no =
+            new JButton("NO");
+
+    no.setBounds(240,180,120,45);
+
+    no.setBackground(Color.BLACK);
+
+    no.setForeground(Color.WHITE);
+
+    no.setFont(
+            new Font("Arial",
+                    Font.BOLD,
+                    18));
+
+    clearFrame.add(no);
+
+    yes.addActionListener(
+            new ActionListener() {
+
+        public void actionPerformed(
+                ActionEvent e) {
+
+            model.setRowCount(0);
+
+           UIManager.put("OptionPane.background", mainColor);
+UIManager.put("Panel.background", mainColor);
+            Object[] options = {"DONE"};
+
+JOptionPane.showOptionDialog(
+        clearFrame,
+        "All Employee Data Cleared Successfully!",
+        "CLEAR SUCCESS",
+        JOptionPane.DEFAULT_OPTION,
+        JOptionPane.INFORMATION_MESSAGE,
+        null,
+        options,
+        options[0]
+);            
+
+            clearFrame.dispose();
+
+        }
+    });
+
+    no.addActionListener(
+            new ActionListener() {
+
+        public void actionPerformed(
+                ActionEvent e) {
+
+            clearFrame.dispose();
+
+        }
+    });
+
+    clearFrame.setLocationRelativeTo(null);
+
+
+    clearFrame.setVisible(true);
+
+}
+  
+        // MONTHLY REPORT
+
+else if(e.getSource()==reportBtn) {
+
+    JFrame reportFrame =
+            new JFrame("Monthly Report");
+
+    ImageIcon logo =
+            new ImageIcon("icon.png");
+
+    reportFrame.setIconImage(
+            logo.getImage());
+
+    reportFrame.setSize(1400,850);
+
+    reportFrame.setLayout(null);
+
+    reportFrame.getContentPane()
+            .setBackground(
+                    new Color(245,245,245));
+
+    // TOP PANEL
+
+    JPanel top =
+            new JPanel();
+
+    top.setBounds(0,0,1400,100);
+
+    top.setBackground(mainColor);
+
+    top.setLayout(null);
+
+    reportFrame.add(top);
+
+    JLabel title =
+            new JLabel("MONTHLY REPORT");
+
+    title.setBounds(60,20,500,50);
+
+    title.setForeground(Color.WHITE);
+
+    title.setFont(
+            new Font("Arial",
+                    Font.BOLD,
+                    38));
+
+    top.add(title);
+
+    // SUMMARY PANEL
+
+    JPanel summary =
+            new JPanel();
+
+    summary.setBounds(40,130,1280,120);
+
+    summary.setBackground(Color.WHITE);
+
+    summary.setLayout(null);
+
+    summary.setBorder(
+            BorderFactory.createLineBorder(
+                    new Color(255,182,193),
+                    2));
+
+    reportFrame.add(summary);
+
+    JLabel summaryTitle =
+            new JLabel(
+                    "Monthly Employee Summary");
+
+    summaryTitle.setBounds(
+            180,20,500,40);
+
+    summaryTitle.setFont(
+            new Font("Segoe UI",
+                    Font.BOLD,
+                    32));
+
+    summary.add(summaryTitle);
+
+    JLabel sub =
+            new JLabel(
+                    "Overview of employee salary and attendance report");
+
+    sub.setBounds(
+            180,65,700,30);
+
+    sub.setFont(
+            new Font("Segoe UI",
+                    Font.PLAIN,
+                    20));
+
+    summary.add(sub);
+
+    JLabel totalEmp =
+            new JLabel(
+                    "TOTAL EMPLOYEES : "
+                    +
+                    model.getRowCount());
+
+    totalEmp.setBounds(850,35,500,40);
+    totalEmp.setForeground(mainColor);
+
+    totalEmp.setFont(
+            new Font("Arial",
+                    Font.BOLD,
+                    28));
+
+    summary.add(totalEmp);
+
+    // REPORT TABLE
+
+    String cols[] = {
+            "ID",
+            "Name",
+            "Dept",
+            "Salary",
+            "Attendance %",
+            "Total Salary"
+    };
+
+    DefaultTableModel reportModel =
+        new DefaultTableModel(cols,0) {
+    @Override
+    public boolean isCellEditable(int row, int column) {
+        return false;
+    }
+};
+
+    double totalSalary = 0;
+
+    for(int i=0;
+        i<model.getRowCount();
+        i++) {
+
+        double salary =
+                Double.parseDouble(
+                        model.getValueAt(i,5)
+                                .toString());
+
+        double attendance =
+                Double.parseDouble(
+                        model.getValueAt(i,4)
+                                .toString());
+
+        double finalSalary =
+                (salary * attendance)/100;
+
+        totalSalary += finalSalary;
+
+        reportModel.addRow(
+                new Object[] {
+
+                        model.getValueAt(i,0),
+                        model.getValueAt(i,1),
+                        model.getValueAt(i,2),
+                        salary,
+                        attendance,
+                        String.format(
+                                "%.2f",
+                                finalSalary)
+                });
+    }
+
+    JTable reportTable =
+            new JTable(reportModel);
+            TableRowSorter<DefaultTableModel> sorter =
+        new TableRowSorter<>(reportModel);
+
+sorter.setComparator(0, (a, b) ->
+        Integer.compare(
+                Integer.parseInt(a.toString()),
+                Integer.parseInt(b.toString())
+        ));
+
+reportTable.setRowSorter(sorter);
+
+sorter.toggleSortOrder(0);
+
+    reportTable.setRowHeight(45);
+
+    reportTable.setFont(
+            new Font("Segoe UI",
+                    Font.PLAIN,
+                    20));
+        
+
+    reportTable.setGridColor(
+            new Color(255,192,203));
+
+    reportTable.setSelectionBackground(
+            new Color(255,182,193));
+
+    JTableHeader header =
+            reportTable.getTableHeader();
+
+    header.setBackground(mainColor);
+
+    header.setForeground(Color.WHITE);
+
+    header.setFont(
+            new Font("Arial",
+                    Font.BOLD,
+                    22));
+
+    header.setPreferredSize(
+            new Dimension(100,50));
+
+    JScrollPane pane =
+            new JScrollPane(reportTable);
+
+    pane.setBounds(40,290,1280,400);
+
+    reportFrame.add(pane);
+
+    // TOTAL SALARY BOX
+
+    JPanel salaryPanel =
+            new JPanel();
+
+    salaryPanel.setBounds(
+            40,720,420,90);
+
+    salaryPanel.setBackground(Color.WHITE);
+
+    salaryPanel.setLayout(null);
+
+    salaryPanel.setBorder(
+            BorderFactory.createLineBorder(
+                    new Color(255,182,193),
+                    2));
+
+    reportFrame.add(salaryPanel);
+
+    JLabel totalText =
+            new JLabel("Total Salary");
+
+    totalText.setBounds(
+            30,10,250,30);
+
+    totalText.setFont(
+            new Font("Arial",
+                    Font.BOLD,
+                    26));
+
+    salaryPanel.add(totalText);
+
+    JLabel totalValue =
+            new JLabel(
+                    String.format(
+                            "%.2f",
+                            totalSalary));
+
+    totalValue.setBounds(
+            30,45,300,30);
+
+    totalValue.setForeground(mainColor);
+
+    totalValue.setFont(
+            new Font("Arial",
+                    Font.BOLD,
+                    32));
+
+    salaryPanel.add(totalValue);
+
+    // EXPORT BUTTON
+
+    JButton exportBtn =
+            new JButton("EXPORT");
+
+    exportBtn.setBounds(
+            850,730,180,55);
+
+    exportBtn.setBackground(
+            new Color(0,170,80));
+
+    exportBtn.setForeground(
+            Color.WHITE);
+
+    exportBtn.setFont(
+            new Font("Arial",
+                    Font.BOLD,
+                    22));
+
+    reportFrame.add(exportBtn);
+
+    // CLOSE BUTTON
+
+    JButton closeBtn =
+            new JButton("CLOSE");
+
+    closeBtn.setBounds(
+            1080,730,180,55);
+
+    closeBtn.setBackground(mainColor);
+
+    closeBtn.setForeground(Color.WHITE);
+
+    closeBtn.setFont(
+            new Font("Arial",
+                    Font.BOLD,
+                    22));
+
+    reportFrame.add(closeBtn);
+
+    // EXPORT ACTION
+
+    exportBtn.addActionListener(
+            new ActionListener() {
+
+        public void actionPerformed(
+                ActionEvent e) {
+
+            try {
+
+               String fileName =
+        "MonthlyReport_"
+        +
+        System.currentTimeMillis()
+        +
+        ".csv";
+
+java.io.FileWriter writer =
+        new java.io.FileWriter(fileName);
+
+                // COLUMN
+
+                writer.write(
+                        "ID,Name,Dept,Salary,Attendance,Total Salary\n");
+
+                // ROWS
+
+                for(int i=0;
+                    i<reportModel.getRowCount();
+                    i++) {
+
+                    for(int j=0;
+                        j<reportModel.getColumnCount();
+                        j++) {
+
+                        writer.write(
+                                reportModel.getValueAt(i,j)
+                                        .toString()
+                                + ",");
+
+                    }
+
+                    writer.write("\n");
+                }
+
+                writer.close();
+
+              UIManager.put("OptionPane.background", mainColor);
+UIManager.put("Panel.background", mainColor);
+               Object[] options = {"DONE"};
+
+JOptionPane.showOptionDialog(
+        reportFrame,
+        "Exported Successfully!\nSaved as "+fileName,
+        "EXPORT SUCCESS",
+        JOptionPane.DEFAULT_OPTION,
+        JOptionPane.INFORMATION_MESSAGE,
+        null,
+        options,
+        options[0]
+);
+
+            }
+
+            catch(Exception ex) {
+
+               UIManager.put("OptionPane.background", mainColor);
+UIManager.put("Panel.background", mainColor);
+               Object[] options = {"TRY AGAIN"};
+
+JOptionPane.showOptionDialog(
+        reportFrame,
+        "Export Failed!",
+        "EXPORT FAILED",
+        JOptionPane.DEFAULT_OPTION,
+        JOptionPane.ERROR_MESSAGE,
+        null,
+        options,
+        options[0]
+);
+
+            }
+        }
+    });
+
+    // CLOSE ACTION
+
+    closeBtn.addActionListener(
+            new ActionListener() {
+
+        public void actionPerformed(
+                ActionEvent e) {
+
+            reportFrame.dispose();
+
+        }
+    });
+
+    reportFrame.setLocationRelativeTo(null);
+   
+
+    reportFrame.setVisible(true);
+
+}
+      
+        // LOGOUT
+
+        else if(e.getSource()==logoutBtn) {
+                UIManager.put("OptionPane.background", mainColor);
+UIManager.put("Panel.background", mainColor);
+                Object[] options = {"BYE"};
+
+JOptionPane.showOptionDialog(
+        loginPanel,
+        "Logged Out Successfully!\nThank You for Using EMS",
+        "LOGOUT",
+        JOptionPane.DEFAULT_OPTION,
+        JOptionPane.INFORMATION_MESSAGE,
+        null,
+        options,
+        options[0]
+);
+                
+            dashboardPanel.setVisible(false);
+
+            loginPanel.setVisible(true);
+
+        }
+
+    }
+
+    // ROLE CONTROL
+
+void openDashboard() {
+
+    loginPanel.setVisible(false);
+
+    dashboardPanel.setVisible(true);
+
+    // FIRST HIDE ALL
+
+    addBtn.setVisible(false);
+
+    updateBtn.setVisible(false);
+
+    deleteBtn.setVisible(false);
+
+    searchBtn.setVisible(false);
+
+    viewBtn.setVisible(false);
+
+    clearBtn.setVisible(false);
+
+    reportBtn.setVisible(false);
+
+    logoutBtn.setVisible(false);
+
+    int y = 120;
+
+    // ADMIN
+
+    if(currentRole.equals("Admin")) {
+
+        addBtn.setVisible(true);
+        addBtn.setBounds(1200,y,220,50);
+        y += 80;
+
+        updateBtn.setVisible(true);
+        updateBtn.setBounds(1200,y,220,50);
+        y += 80;
+
+        deleteBtn.setVisible(true);
+        deleteBtn.setBounds(1200,y,220,50);
+        y += 80;
+
+        searchBtn.setVisible(true);
+        searchBtn.setBounds(1200,y,220,50);
+        y += 80;
+
+        viewBtn.setVisible(true);
+        viewBtn.setBounds(1200,y,220,50);
+        y += 80;
+
+        clearBtn.setVisible(true);
+        clearBtn.setBounds(1200,y,220,50);
+        y += 80;
+
+        reportBtn.setVisible(true);
+        reportBtn.setBounds(1200,y,220,50);
+        y += 80;
+
+        logoutBtn.setVisible(true);
+        logoutBtn.setBounds(1200,y,220,50);
+
+    }
+
+    // HR
+
+    else if(currentRole.equals("HR")) {
+
+        addBtn.setVisible(true);
+        addBtn.setBounds(1200,y,220,50);
+        y += 80;
+
+        updateBtn.setVisible(true);
+        updateBtn.setBounds(1200,y,220,50);
+        y += 80;
+
+        searchBtn.setVisible(true);
+        searchBtn.setBounds(1200,y,220,50);
+        y += 80;
+
+        viewBtn.setVisible(true);
+        viewBtn.setBounds(1200,y,220,50);
+        y += 80;
+
+        reportBtn.setVisible(true);
+        reportBtn.setBounds(1200,y,220,50);
+        y += 80;
+
+        logoutBtn.setVisible(true);
+        logoutBtn.setBounds(1200,y,220,50);
+
+    }
+
+    // MANAGER
+
+    else if(currentRole.equals("Manager")) {
+
+        updateBtn.setVisible(true);
+        updateBtn.setBounds(1200,y,220,50);
+        y += 80;
+
+        searchBtn.setVisible(true);
+        searchBtn.setBounds(1200,y,220,50);
+        y += 80;
+
+        viewBtn.setVisible(true);
+        viewBtn.setBounds(1200,y,220,50);
+        y += 80;
+
+        reportBtn.setVisible(true);
+        reportBtn.setBounds(1200,y,220,50);
+        y += 80;
+
+        logoutBtn.setVisible(true);
+        logoutBtn.setBounds(1200,y,220,50);
+
+    }
+
+    // TL
+
+    else if(currentRole.equals("TL")) {
+
+        searchBtn.setVisible(true);
+        searchBtn.setBounds(1200,y,220,50);
+        y += 80;
+
+        viewBtn.setVisible(true);
+        viewBtn.setBounds(1200,y,220,50);
+        y += 80;
+
+        reportBtn.setVisible(true);
+        reportBtn.setBounds(1200,y,220,50);
+        y += 80;
+
+        logoutBtn.setVisible(true);
+        logoutBtn.setBounds(1200,y,220,50);
+
+    }
+
+    // EMPLOYEE
+
+    else if(currentRole.equals("Employee")) {
+
+        searchBtn.setVisible(true);
+        searchBtn.setBounds(1200,y,220,50);
+        y += 80;
+
+        viewBtn.setVisible(true);
+        viewBtn.setBounds(1200,y,220,50);
+        y += 80;
+
+        logoutBtn.setVisible(true);
+        logoutBtn.setBounds(1200,y,220,50);
+
+      }
+
+    }
+
+    // MAIN
+
+    public static void main(String[] args) {
+
+        new EMS();
+
+    }
+}
+
